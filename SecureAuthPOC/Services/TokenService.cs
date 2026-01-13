@@ -18,7 +18,7 @@ namespace SecureAuthPOC.API.Services
         private readonly JWTOptions _options;
         private readonly InMemoryDbContext _dbContext;
 
-        public TokenService(IOptions<JWTOptions> options, InMemoryDbContext dbContext)
+        public TokenService(IConfiguration configuration, IOptions<JWTOptions> options, InMemoryDbContext dbContext)
         {
             //_secretKey = configuration["Jwt:SecretKey"]
             //    ?? throw new ArgumentNullException("Jwt:SecretKey");
@@ -26,6 +26,10 @@ namespace SecureAuthPOC.API.Services
             //_audience = configuration["Jwt:Audience"] ?? "SecureAuthPOC-Client";
             //_accessTokenExpiryMinutes = int.Parse(configuration["Jwt:AccessTokenExpiryMinutes"] ?? "15");
             _options = options.Value;
+
+            _options.SecretKey = configuration["Jwt:SecretKey"];
+            _options.Issuer = configuration["Jwt:Issuer"] ?? "SecureAuthPOC";
+            _options.Audience = configuration["Jwt:Audience"] ?? "SecureAuthPOC-Client";
             _dbContext = dbContext;
         }
 
