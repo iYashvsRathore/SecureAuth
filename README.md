@@ -89,6 +89,32 @@ curl -X GET https://localhost:5001/health
 
 ### Option 1: Using Docker Compose (Recommended)
 
+#### Docker Compose Configuration
+
+```yaml
+version: '3.8'
+
+services:
+  secureauth-api:
+    build: .
+    ports:
+      - "8080:80"
+      - "8081:443"
+    environment:
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - RateLimiting__Enabled=true
+      - RateLimiting__RequestsPerMinute=5
+    restart: unless-stopped
+    networks:
+      - secureauth-network
+
+networks:
+  secureauth-network:
+    driver: bridge
+```
+
+
 ```bash
 # Clone the repository
 git clone https://github.com/your-organization/SecureAuthPOC.git
@@ -143,7 +169,6 @@ docker-compose --env-file .env up --build
 |--------|----------|-------------|--------------|
 | GET | `/health` | Health check endpoint | No |
 | GET | `/` or `/swagger` | API documentation (Swagger UI) | No |
-| GET | `/test-rate-limit` | Test rate limiting | Yes |
 
 ### Request Examples
 
@@ -268,31 +293,6 @@ done
 | `Jwt__Audience` | JWT audience | SecureAuthPOC-Client | No |
 | `ASPNETCORE_ENVIRONMENT` | Runtime environment | Production | No |
 | `RateLimiting__Enabled` | Enable/disable rate limiting | true | No |
-
-## Docker Compose Configuration
-
-```yaml
-version: '3.8'
-
-services:
-  secureauth-api:
-    build: .
-    ports:
-      - "8080:80"
-      - "8081:443"
-    environment:
-      - Jwt__SecretKey=${JWT_SECRET_KEY}
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - RateLimiting__Enabled=true
-      - RateLimiting__RequestsPerMinute=5
-    restart: unless-stopped
-    networks:
-      - secureauth-network
-
-networks:
-  secureauth-network:
-    driver: bridge
-```
 
 ## Project Structure
 
