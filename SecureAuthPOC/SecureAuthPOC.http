@@ -1,0 +1,6 @@
+@SecureAuthPOC_HostAddress = http://localhost:5239
+
+GET {{SecureAuthPOC_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
